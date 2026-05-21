@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+python-jose[cryptography]
+bcrypt
+python-dotenv
+python-multipart
+pydantic[email]
+
+# PostgreSQL driver (Supabase / Render)
+psycopg2-binary
+resend

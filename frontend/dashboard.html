@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Tailor Hub</title>
+  <link rel="stylesheet" href="main.css" />
+  <link rel="stylesheet" href="components.css" />
+  <style>
+    .dash-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .dash-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .right-col { display: flex; flex-direction: column; gap: 16px; }
+
+    .greeting-bar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+    .greeting-name { font-size: 22px; font-weight: 600; letter-spacing: -0.4px; }
+    .greeting-hint { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+
+    .top-customers-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .top-customers-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .tc-name { flex: 1; font-size: 13px; font-weight: 500; }
+    .tc-amount { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div id="sidebar-root"></div>
+
+    <main class="main-content">
+      <div class="greeting-bar">
+        <div>
+          <div class="greeting-name" id="greeting-name">Good morning</div>
+          <div class="greeting-hint" id="greeting-hint">Loading your dashboard…</div>
+        </div>
+        <button class="btn btn-primary" onclick="window.location.href='orders.html?new=1'">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New order
+        </button>
+      </div>
+
+      <!-- Metrics -->
+      <div class="metrics-grid" id="metrics-grid">
+        <div class="metric-card"><div class="metric-label">Revenue this month</div><div class="metric-value" id="m-revenue">—</div><div class="metric-delta neutral" id="m-revenue-delta">Loading…</div></div>
+        <div class="metric-card"><div class="metric-label">Active orders</div><div class="metric-value" id="m-orders">—</div><div class="metric-delta neutral" id="m-orders-delta">Loading…</div></div>
+        <div class="metric-card"><div class="metric-label">Total customers</div><div class="metric-value" id="m-customers">—</div><div class="metric-delta neutral" id="m-customers-delta">Loading…</div></div>
+        <div class="metric-card"><div class="metric-label">Pending payments</div><div class="metric-value" id="m-pending">—</div><div class="metric-delta down" id="m-pending-delta">Loading…</div></div>
+      </div>
+
+      <!-- Main grid -->
+      <div class="dash-grid">
+        <!-- Recent orders -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Recent orders</div>
+            <a href="orders.html" class="card-action">View all →</a>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Due date</th>
+                  <th>Status</th>
+                  <th style="text-align:right">Balance</th>
+                </tr>
+              </thead>
+              <tbody id="recent-orders-body">
+                <tr><td colspan="4"><div class="loading-state"><div class="spinner"></div></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right column -->
+        <div class="right-col">
+          <!-- Quick actions -->
+          <div class="card">
+            <div class="card-header"><div class="card-title">Quick actions</div></div>
+            <button class="quick-action" onclick="window.location.href='orders.html?new=1'">
+              <div class="qa-icon" style="background:var(--purple-50)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--purple-600)" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </div>
+              <div><div class="qa-label">New order</div><div class="qa-sub">Add order + measurements</div></div>
+            </button>
+            <button class="quick-action" onclick="window.location.href='customers.html?new=1'">
+              <div class="qa-icon" style="background:var(--teal-50)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal-600)" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <div><div class="qa-label">Add customer</div><div class="qa-sub">Save profile + measurements</div></div>
+            </button>
+            <button class="quick-action" onclick="window.location.href='payments.html?new=1'">
+              <div class="qa-icon" style="background:var(--amber-50)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--amber-600)" stroke-width="2" stroke-linecap="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              </div>
+              <div><div class="qa-label">Record payment</div><div class="qa-sub">Log deposit or full payment</div></div>
+            </button>
+          </div>
+
+          <!-- Upcoming appointments -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Upcoming fittings</div>
+              <a href="appointments.html" class="card-action">View all →</a>
+            </div>
+            <div id="appointments-list">
+              <div class="loading-state"><div class="spinner"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom grid -->
+      <div class="dash-grid-3">
+        <!-- Order status breakdown -->
+        <div class="card">
+          <div class="card-header"><div class="card-title">Order status</div></div>
+          <div id="status-bars">
+            <div class="loading-state"><div class="spinner"></div></div>
+          </div>
+        </div>
+
+        <!-- Top customers -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Top customers</div>
+            <a href="customers.html" class="card-action">View all →</a>
+          </div>
+          <div id="top-customers">
+            <div class="loading-state"><div class="spinner"></div></div>
+          </div>
+        </div>
+
+        <!-- Overdue orders -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Needs attention</div>
+            <span id="attention-count" style="background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;"></span>
+          </div>
+          <div id="attention-list">
+            <div class="loading-state"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="auth.js"></script>
+  <script src="utils.js"></script>
+  <script src="api.js"></script>
+  <script src="sidebar.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>

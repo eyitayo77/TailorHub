@@ -1,0 +1,1839 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tailor Hub — Business Management for Modern Tailors</title>
+  <meta name="description"
+    content="Tailor Hub helps tailors and fashion designers manage orders, customers, measurements, payments, and appointments — all in one beautiful platform." />
+  <link rel="stylesheet" href="main.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+  <style>
+    /* ── Reset & base ── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --purple-50: #EEEDFE;
+      --purple-100: #CECBF6;
+      --purple-400: #7F77DD;
+      --purple-600: #534AB7;
+      --purple-800: #3C3489;
+      --purple-900: #26215C;
+      --teal-50: #E1F5EE;
+      --teal-100: #9FE1CB;
+      --teal-400: #1D9E75;
+      --teal-600: #0F6E56;
+      --amber-100: #FAC775;
+      --amber-400: #BA7517;
+      --gray-50: #F7F6F3;
+      --gray-100: #EFEFEB;
+      --gray-200: #E0DED8;
+      --gray-300: #C8C6BF;
+      --gray-400: #888780;
+      --gray-600: #5F5E5A;
+      --gray-800: #2C2C2A;
+      --gray-900: #1A1A18;
+
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-2xl: 28px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--gray-900);
+      background: #fff;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    /* ── Utility ── */
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--purple-50);
+      color: var(--purple-600);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 100px;
+      margin-bottom: 18px;
+    }
+
+    .badge svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      transition: box-shadow 0.2s;
+    }
+
+    .nav.scrolled {
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.07);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      color: var(--gray-900);
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      background: var(--purple-600);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-mark svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .brand span {
+      color: var(--purple-600);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-600);
+      transition: color 0.15s;
+    }
+
+    .nav-links a:hover {
+      color: var(--gray-900);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-ghost {
+      padding: 8px 18px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-800);
+      border-radius: var(--radius-md);
+      transition: background 0.15s;
+    }
+
+    .btn-ghost:hover {
+      background: var(--gray-100);
+    }
+
+    .btn-primary {
+      padding: 9px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--purple-600);
+      border-radius: var(--radius-md);
+      transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+    }
+
+    .btn-primary:hover {
+      background: var(--purple-800);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(83, 74, 183, 0.35);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 160px 0 100px;
+      background: linear-gradient(160deg, #fff 0%, #f5f4ff 50%, #e8faf3 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      right: -200px;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(83, 74, 183, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -150px;
+      left: -150px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(29, 158, 117, 0.10) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .hero-eyebrow {
+      margin-bottom: 20px;
+    }
+
+    .hero-h1 {
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      color: var(--gray-900);
+      margin-bottom: 20px;
+    }
+
+    .hero-h1 .accent {
+      background: linear-gradient(135deg, var(--purple-600), var(--teal-400));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: var(--gray-600);
+      line-height: 1.65;
+      margin-bottom: 36px;
+      max-width: 480px;
+    }
+
+    .hero-ctas {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .hero-cta-primary {
+      padding: 13px 28px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--purple-600);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.15s, transform 0.2s, box-shadow 0.2s;
+    }
+
+    .hero-cta-primary:hover {
+      background: var(--purple-800);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(83, 74, 183, 0.4);
+    }
+
+    .hero-cta-secondary {
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--gray-800);
+      border: 1.5px solid rgba(0, 0, 0, 0.12);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .hero-cta-secondary:hover {
+      background: rgba(0, 0, 0, 0.03);
+      border-color: rgba(0, 0, 0, 0.2);
+    }
+
+    .hero-trust {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 28px;
+      font-size: 13px;
+      color: var(--gray-400);
+    }
+
+    .hero-trust svg {
+      width: 14px;
+      height: 14px;
+      color: var(--teal-400);
+      flex-shrink: 0;
+    }
+
+    /* hero visual — dashboard mockup */
+    .hero-visual {
+      position: relative;
+    }
+
+    .hero-card {
+      background: #fff;
+      border-radius: var(--radius-2xl);
+      border: 1px solid rgba(0, 0, 0, 0.07);
+      box-shadow: 0 32px 80px rgba(83, 74, 183, 0.15), 0 8px 24px rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+      transform: perspective(1000px) rotateY(-4deg) rotateX(2deg);
+      transition: transform 0.5s ease;
+    }
+
+    .hero-card:hover {
+      transform: perspective(1000px) rotateY(-1deg) rotateX(0deg);
+    }
+
+    .hero-card-topbar {
+      background: var(--gray-900);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .dot-red {
+      background: #ff5f57;
+    }
+
+    .dot-yellow {
+      background: #ffbd2e;
+    }
+
+    .dot-green {
+      background: #28c840;
+    }
+
+    .hero-card-body {
+      padding: 20px;
+    }
+
+    .mockup-greeting {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: 14px;
+    }
+
+    .mockup-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .mockup-metric {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-100);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+    }
+
+    .mm-label {
+      font-size: 10px;
+      color: var(--gray-400);
+      margin-bottom: 3px;
+    }
+
+    .mm-val {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--gray-900);
+      letter-spacing: -0.5px;
+    }
+
+    .mm-sub {
+      font-size: 9px;
+      color: var(--teal-400);
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    .mockup-table-head {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 4px;
+      font-size: 10px;
+      color: var(--gray-400);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 6px 10px;
+      background: var(--gray-50);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--gray-100);
+    }
+
+    .mockup-table-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 4px;
+      font-size: 11px;
+      padding: 7px 10px;
+      border-bottom: 1px solid var(--gray-100);
+      align-items: center;
+    }
+
+    .mockup-table-row:last-child {
+      border-bottom: none;
+    }
+
+    .row-name {
+      font-weight: 500;
+      font-size: 11px;
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 100px;
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    .pill-purple {
+      background: var(--purple-50);
+      color: var(--purple-600);
+    }
+
+    .pill-teal {
+      background: var(--teal-50);
+      color: var(--teal-600);
+    }
+
+    .pill-amber {
+      background: #FAEEDA;
+      color: var(--amber-400);
+    }
+
+    /* floating chips */
+    .float-chip {
+      position: absolute;
+      background: #fff;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: var(--radius-lg);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--gray-800);
+      animation: floatY 4s ease-in-out infinite;
+    }
+
+    .float-chip .chip-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chip-1 {
+      bottom: -20px;
+      left: -30px;
+      animation-delay: 0s;
+    }
+
+    .chip-2 {
+      top: 20px;
+      right: -30px;
+      animation-delay: 1.5s;
+    }
+
+    @keyframes floatY {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-8px);
+      }
+    }
+
+    /* ── SOCIAL PROOF ── */
+    .social-proof {
+      border-top: 1px solid var(--gray-100);
+      border-bottom: 1px solid var(--gray-100);
+      padding: 28px 0;
+      background: var(--gray-50);
+    }
+
+    .social-proof-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .social-proof-text {
+      font-size: 13px;
+      color: var(--gray-400);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .proof-stat {
+      text-align: center;
+    }
+
+    .proof-num {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--gray-900);
+      letter-spacing: -0.5px;
+    }
+
+    .proof-label {
+      font-size: 12px;
+      color: var(--gray-400);
+      margin-top: 2px;
+    }
+
+    /* ── FEATURES ── */
+    .section {
+      padding: 100px 0;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .section-h2 {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      letter-spacing: -1px;
+      color: var(--gray-900);
+      margin-bottom: 14px;
+      line-height: 1.15;
+    }
+
+    .section-sub {
+      font-size: 17px;
+      color: var(--gray-600);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: #fff;
+      border: 1px solid var(--gray-100);
+      border-radius: var(--radius-xl);
+      padding: 32px 28px;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(83, 74, 183, 0.10);
+      border-color: var(--purple-100);
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .feature-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .feature-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+
+    .feature-desc {
+      font-size: 14px;
+      color: var(--gray-600);
+      line-height: 1.65;
+    }
+
+    /* featured (wide) row */
+    .features-featured {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .feature-card-wide {
+      background: linear-gradient(135deg, var(--purple-900) 0%, var(--purple-600) 100%);
+      color: #fff;
+      border: none;
+    }
+
+    .feature-card-wide:hover {
+      border-color: transparent;
+      box-shadow: 0 16px 48px rgba(83, 74, 183, 0.35);
+    }
+
+    .feature-card-wide .feature-icon {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .feature-card-wide .feature-title {
+      color: #fff;
+    }
+
+    .feature-card-wide .feature-desc {
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .feature-card-teal {
+      background: linear-gradient(135deg, var(--teal-600) 0%, var(--teal-400) 100%);
+      color: #fff;
+      border: none;
+    }
+
+    .feature-card-teal:hover {
+      border-color: transparent;
+      box-shadow: 0 16px 48px rgba(29, 158, 117, 0.35);
+    }
+
+    .feature-card-teal .feature-icon {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .feature-card-teal .feature-title {
+      color: #fff;
+    }
+
+    .feature-card-teal .feature-desc {
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how-section {
+      background: var(--gray-50);
+      padding: 100px 0;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: calc(16.66% + 16px);
+      right: calc(16.66% + 16px);
+      height: 2px;
+      background: linear-gradient(90deg, var(--purple-100), var(--teal-100));
+      z-index: 0;
+    }
+
+    .step {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-num {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid var(--purple-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--purple-600);
+      box-shadow: 0 4px 16px rgba(83, 74, 183, 0.12);
+    }
+
+    .step-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: 8px;
+    }
+
+    .step-desc {
+      font-size: 14px;
+      color: var(--gray-600);
+      line-height: 1.65;
+    }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .testimonial-card {
+      background: #fff;
+      border: 1px solid var(--gray-100);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+    }
+
+    .stars {
+      display: flex;
+      gap: 3px;
+      margin-bottom: 14px;
+    }
+
+    .stars svg {
+      width: 14px;
+      height: 14px;
+      fill: #F5A623;
+    }
+
+    .testimonial-text {
+      font-size: 14px;
+      color: var(--gray-700, #444);
+      line-height: 1.7;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .author-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .author-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+
+    .author-role {
+      font-size: 12px;
+      color: var(--gray-400);
+    }
+
+    /* ── PRICING ── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .pricing-card {
+      background: #fff;
+      border: 1px solid var(--gray-100);
+      border-radius: var(--radius-xl);
+      padding: 32px 28px;
+      position: relative;
+    }
+
+    .pricing-card-featured {
+      background: var(--purple-900);
+      border-color: var(--purple-900);
+      color: #fff;
+    }
+
+    .pricing-badge {
+      position: absolute;
+      top: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--purple-600);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 100px;
+    }
+
+    .pricing-plan {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--gray-400);
+      margin-bottom: 10px;
+    }
+
+    .pricing-card-featured .pricing-plan {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .pricing-price {
+      font-size: 40px;
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      color: var(--gray-900);
+      line-height: 1;
+    }
+
+    .pricing-card-featured .pricing-price {
+      color: #fff;
+    }
+
+    .pricing-currency {
+      font-size: 20px;
+      font-weight: 600;
+      vertical-align: top;
+      line-height: 1.8;
+    }
+
+    .pricing-period {
+      font-size: 13px;
+      color: var(--gray-400);
+      margin-top: 4px;
+      margin-bottom: 24px;
+    }
+
+    .pricing-card-featured .pricing-period {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .pricing-divider {
+      height: 1px;
+      background: var(--gray-100);
+      margin-bottom: 24px;
+    }
+
+    .pricing-card-featured .pricing-divider {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .pricing-features {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .pricing-feature {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--gray-700, #444);
+    }
+
+    .pricing-card-featured .pricing-feature {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .pricing-feature svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .pf-check {
+      color: var(--teal-400);
+    }
+
+    .pf-x {
+      color: var(--gray-300);
+    }
+
+    .pricing-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      transition: all 0.15s;
+    }
+
+    .pricing-btn-outline {
+      border: 1.5px solid var(--gray-200);
+      color: var(--gray-900);
+    }
+
+    .pricing-btn-outline:hover {
+      border-color: var(--purple-400);
+      color: var(--purple-600);
+      background: var(--purple-50);
+    }
+
+    .pricing-btn-solid {
+      background: var(--purple-600);
+      color: #fff;
+    }
+
+    .pricing-btn-solid:hover {
+      background: var(--purple-800);
+      box-shadow: 0 4px 16px rgba(83, 74, 183, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .pricing-btn-inverted {
+      background: #fff;
+      color: var(--purple-600);
+    }
+
+    .pricing-btn-inverted:hover {
+      background: rgba(255, 255, 255, 0.92);
+      transform: translateY(-1px);
+    }
+
+    /* ── CTA BANNER ── */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--purple-900) 0%, var(--purple-600) 60%, var(--teal-400) 100%);
+      border-radius: var(--radius-2xl);
+      padding: 72px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      margin: 0 24px;
+    }
+
+    .cta-banner::before {
+      content: '';
+      position: absolute;
+      top: -80px;
+      right: -80px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+    }
+
+    .cta-h2 {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -1px;
+      margin-bottom: 14px;
+    }
+
+    .cta-sub {
+      font-size: 17px;
+      color: rgba(255, 255, 255, 0.72);
+      margin-bottom: 36px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .cta-btn-white {
+      padding: 13px 28px;
+      font-size: 15px;
+      font-weight: 600;
+      background: #fff;
+      color: var(--purple-900);
+      border-radius: var(--radius-lg);
+      transition: all 0.15s;
+    }
+
+    .cta-btn-white:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .cta-btn-outline {
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #fff;
+      border: 1.5px solid rgba(255, 255, 255, 0.4);
+      border-radius: var(--radius-lg);
+      transition: all 0.15s;
+    }
+
+    .cta-btn-outline:hover {
+      border-color: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      padding: 60px 0 36px;
+      border-top: 1px solid var(--gray-100);
+    }
+
+    .footer-inner {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+
+    .footer-brand p {
+      font-size: 14px;
+      color: var(--gray-400);
+      margin-top: 12px;
+      max-width: 260px;
+      line-height: 1.65;
+    }
+
+    .footer-col-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-900);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-links a {
+      font-size: 14px;
+      color: var(--gray-600);
+      transition: color 0.15s;
+    }
+
+    .footer-links a:hover {
+      color: var(--gray-900);
+    }
+
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 28px;
+      border-top: 1px solid var(--gray-100);
+      font-size: 13px;
+      color: var(--gray-400);
+    }
+
+    /* ── Animations ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Mobile hamburger ── */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 6px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--gray-800);
+      border-radius: 2px;
+      transition: transform 0.2s;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .hero-inner {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .hero-card {
+        transform: none !important;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .features-featured {
+        grid-template-columns: 1fr;
+      }
+
+      .steps {
+        grid-template-columns: 1fr;
+      }
+
+      .steps::before {
+        display: none;
+      }
+
+      .testimonials-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .pricing-grid {
+        grid-template-columns: 1fr;
+        max-width: 420px;
+        margin: 0 auto;
+      }
+
+      .footer-inner {
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .testimonials-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-banner {
+        padding: 48px 24px;
+      }
+
+      .mockup-metrics {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .mockup-table-head,
+      .mockup-table-row {
+        grid-template-columns: 2fr 1fr 1fr;
+      }
+
+      .mockup-table-head :last-child,
+      .mockup-table-row :last-child {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── NAV ── -->
+  <nav class="nav" id="nav" role="navigation" aria-label="Main navigation">
+    <div class="container nav-inner">
+      <a href="landing.html" class="brand" id="nav-brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+            <path d="M2 17l10 5 10-5" />
+            <path d="M2 12l10 5 10-5" />
+          </svg>
+        </div>
+        Tailor <span>Hub</span>
+      </a>
+
+      <ul class="nav-links" role="list">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how-it-works">How it works</a></li>
+        <li><a href="#testimonials">Reviews</a></li>
+        <li><a href="#early-access">Early Access</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="index.html" class="btn-ghost">Sign in</a>
+        <a href="register.html" class="btn-primary" id="nav-cta">Get started free</a>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="hero" id="hero">
+    <div class="container hero-inner">
+      <!-- Left -->
+      <div class="hero-left">
+        <div class="hero-eyebrow">
+          <span class="badge">
+            <svg viewBox="0 0 16 16" fill="currentColor">
+              <circle cx="8" cy="8" r="4" />
+            </svg>
+            Designed for African tailors
+          </span>
+        </div>
+        <h1 class="hero-h1">
+          Run your<br />
+          tailoring business<br />
+          <span class="accent">without the chaos</span>
+        </h1>
+        <p class="hero-sub">
+          Tailor Hub keeps your orders, customers, measurements, payments and fittings organized — so you can focus on
+          the craft, not the spreadsheets.
+        </p>
+        <div class="hero-ctas">
+          <a href="register.html" class="hero-cta-primary" id="hero-cta-primary">
+            Start for free
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+              stroke-linecap="round">
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </a>
+        </div>
+        <div class="hero-trust">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal-400)" stroke-width="2.5" stroke-linecap="round">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          Free forever plan &nbsp;·&nbsp;
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal-400)" stroke-width="2.5" stroke-linecap="round">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          No credit card needed &nbsp;·&nbsp;
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal-400)" stroke-width="2.5" stroke-linecap="round">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          Setup in 2 minutes
+        </div>
+      </div>
+
+      <!-- Right – dashboard mockup -->
+      <div class="hero-visual">
+        <div class="hero-card" id="hero-card">
+          <div class="hero-card-topbar">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+          </div>
+          <div class="hero-card-body">
+            <div class="mockup-greeting">Good morning, Ade 👋</div>
+            <div class="mockup-metrics">
+              <div class="mockup-metric">
+                <div class="mm-label">Revenue</div>
+                <div class="mm-val">₦248k</div>
+                <div class="mm-sub">↑ 12% this month</div>
+              </div>
+              <div class="mockup-metric">
+                <div class="mm-label">Orders</div>
+                <div class="mm-val">34</div>
+                <div class="mm-sub">↑ 5 new</div>
+              </div>
+              <div class="mockup-metric">
+                <div class="mm-label">Customers</div>
+                <div class="mm-val">109</div>
+                <div class="mm-sub">↑ 8 new</div>
+              </div>
+              <div class="mockup-metric">
+                <div class="mm-label">Pending</div>
+                <div class="mm-val">₦42k</div>
+                <div class="mm-sub" style="color:#D85A30">3 overdue</div>
+              </div>
+            </div>
+            <div class="mockup-table-head">
+              <span>Customer</span><span>Due</span><span>Status</span><span>Amount</span>
+            </div>
+            <div class="mockup-table-row">
+              <span class="row-name">Amara Osei</span>
+              <span style="color:var(--gray-400);font-size:10px">Apr 18</span>
+              <span><span class="status-pill pill-purple">Cutting</span></span>
+              <span style="font-family:monospace;font-size:10px">₦18,000</span>
+            </div>
+            <div class="mockup-table-row">
+              <span class="row-name">Fatima Bello</span>
+              <span style="color:var(--gray-400);font-size:10px">Apr 20</span>
+              <span><span class="status-pill pill-teal">Ready</span></span>
+              <span style="font-family:monospace;font-size:10px">₦35,000</span>
+            </div>
+            <div class="mockup-table-row">
+              <span class="row-name">Kofi Mensah</span>
+              <span style="color:var(--gray-400);font-size:10px">Apr 22</span>
+              <span><span class="status-pill pill-amber">Fitting</span></span>
+              <span style="font-family:monospace;font-size:10px">₦12,500</span>
+            </div>
+            <div class="mockup-table-row">
+              <span class="row-name">Ngozi Ibe</span>
+              <span style="color:var(--gray-400);font-size:10px">Apr 25</span>
+              <span><span class="status-pill pill-purple">Cutting</span></span>
+              <span style="font-family:monospace;font-size:10px">₦22,000</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating chips -->
+        <div class="float-chip chip-1">
+          <div class="chip-icon" style="background:var(--teal-50)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal-600)" stroke-width="2.5"
+              stroke-linecap="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--gray-900);font-weight:600">Order ready 🎉</div>
+            <div style="font-size:10px;color:var(--gray-400)">Fatima's agbada — pickup due</div>
+          </div>
+        </div>
+        <div class="float-chip chip-2">
+          <div class="chip-icon" style="background:var(--purple-50)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--purple-600)" stroke-width="2.5"
+              stroke-linecap="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--gray-900);font-weight:600">Fitting today, 2pm</div>
+            <div style="font-size:10px;color:var(--gray-400)">Kofi Mensah</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ── FEATURES ── -->
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="badge">Everything you need</span>
+        <h2 class="section-h2">Built for how tailors<br />actually work</h2>
+        <p class="section-sub">Every screen, every workflow designed with the real tailoring process in mind — from
+          measuring a customer to collecting final payment.</p>
+      </div>
+
+      <div class="features-grid fade-in">
+        <!-- Order Management -->
+        <div class="feature-card">
+          <div class="feature-icon" style="background:var(--purple-50)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--purple-600)" stroke-width="2" stroke-linecap="round">
+              <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
+              <rect x="9" y="3" width="6" height="4" rx="1" />
+              <path d="M9 12h6M9 16h4" />
+            </svg>
+          </div>
+          <div class="feature-title">Order Management</div>
+          <div class="feature-desc">Track every garment from deposit to delivery. Set due dates, update statuses, and
+            never lose an order again.</div>
+        </div>
+
+        <!-- Customer Profiles -->
+        <div class="feature-card">
+          <div class="feature-icon" style="background:var(--teal-50)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal-600)" stroke-width="2" stroke-linecap="round">
+              <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+          <div class="feature-title">Customer Profiles</div>
+          <div class="feature-desc">Save measurements, notes, and order history for every customer. No more scribbling
+            on paper.</div>
+        </div>
+
+        <!-- Payments -->
+        <div class="feature-card">
+          <div class="feature-icon" style="background:#FAEEDA">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--amber-400)" stroke-width="2" stroke-linecap="round">
+              <rect x="1" y="4" width="22" height="16" rx="2" />
+              <line x1="1" y1="10" x2="23" y2="10" />
+            </svg>
+          </div>
+          <div class="feature-title">Payment Tracking</div>
+          <div class="feature-desc">Log deposits and balances. Know exactly who has paid, who owes, and how much is
+            outstanding.</div>
+        </div>
+
+        <!-- Appointments -->
+        <div class="feature-card">
+          <div class="feature-icon" style="background:var(--blue-50,#E6F1FB)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#378ADD" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+          </div>
+          <div class="feature-title">Fitting Appointments</div>
+          <div class="feature-desc">Schedule fittings and pickups. Keep your diary clear and your customers on time.
+          </div>
+        </div>
+
+        <!-- Analytics -->
+        <div class="feature-card">
+          <div class="feature-icon" style="background:var(--green-50,#EAF3DE)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#639922" stroke-width="2" stroke-linecap="round">
+              <line x1="18" y1="20" x2="18" y2="10" />
+              <line x1="12" y1="20" x2="12" y2="4" />
+              <line x1="6" y1="20" x2="6" y2="14" />
+            </svg>
+          </div>
+          <div class="feature-title">Business Analytics</div>
+          <div class="feature-desc">See your top customers, best months, and revenue trends. Make smarter decisions with
+            real data.</div>
+        </div>
+
+        <!-- Quick actions -->
+        <div class="feature-card">
+          <div class="feature-icon" style="background:var(--coral-50,#FAECE7)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#D85A30" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+          </div>
+          <div class="feature-title">Overdue Alerts</div>
+          <div class="feature-desc">Instantly see orders that need attention — overdue deliveries, missing payments,
+            unprepared fittings.</div>
+        </div>
+      </div>
+
+      <!-- Featured wide cards -->
+      <div class="features-featured fade-in">
+        <div class="feature-card feature-card-wide">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
+            </svg>
+          </div>
+          <div class="feature-title">Measurements, your way</div>
+          <div class="feature-desc">Store every body measurement in one place — bust, waist, hips, sleeve, inseam and
+            more. Editable per order so every garment fits perfectly.</div>
+        </div>
+        <div class="feature-card feature-card-teal">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5z" />
+              <path d="M2 17l10 5 10-5" />
+              <path d="M2 12l10 5 10-5" />
+            </svg>
+          </div>
+          <div class="feature-title">One dashboard, complete picture</div>
+          <div class="feature-desc">Revenue, active orders, upcoming fittings and payments due — all at a glance the
+            moment you log in. Start your day with clarity.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── HOW IT WORKS ── -->
+  <section class="how-section" id="how-it-works">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="badge">Simple to start</span>
+        <h2 class="section-h2">From sign-up to running<br />in under 2 minutes</h2>
+        <p class="section-sub">No training. No complicated setup. Just open Tailor Hub and start adding your customers.
+        </p>
+      </div>
+      <div class="steps fade-in">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-title">Create your account</div>
+          <div class="step-desc">Sign up free in seconds. Add your business name and you're in. No credit card, no
+            waiting.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-title">Add your customers</div>
+          <div class="step-desc">Import your customers or add them one by one. Store measurements and notes alongside
+            each profile.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-title">Manage everything</div>
+          <div class="step-desc">Track orders, collect payments, schedule fittings, and watch your revenue grow — all
+            from one screen.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TESTIMONIALS ── -->
+  <section class="section" id="testimonials">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="badge">Loved by tailors</span>
+        <h2 class="section-h2">What tailors are saying</h2>
+        <p class="section-sub">Real stories from real tailors who switched from WhatsApp notes and notepads to
+          Tailor Hub.</p>
+      </div>
+      <div class="testimonials-grid fade-in">
+        <div class="testimonial-card">
+          <div class="stars">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+          </div>
+          <p class="testimonial-text">"I used to write everything in a notebook. Now I can see all my orders, who has
+            paid, and what's due — right on my phone. Tailor Hub changed how I run my shop."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar" style="background:var(--purple-600)">AO</div>
+            <div>
+              <div class="author-name">Ade Okonkwo</div>
+              <div class="author-role">Ade Couture, Lagos</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+          </div>
+          <p class="testimonial-text">"Before Tailor Hub I lost track of pending balances all the time. Now I know
+            exactly what each customer owes. My cash flow has genuinely improved."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar" style="background:var(--teal-600)">FB</div>
+            <div>
+              <div class="author-name">Fatima Bello</div>
+              <div class="author-role">Fatima's Designs, Abuja</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+          </div>
+          <p class="testimonial-text">"Setting up fittings used to mean lots of back-and-forth on WhatsApp. Now my
+            customers just see the date in my schedule and I don't miss anything."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar" style="background:#BA7517">KM</div>
+            <div>
+              <div class="author-name">Kofi Mensah</div>
+              <div class="author-role">KM Fashions, Accra</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EARLY ACCESS ── -->
+  <section class="how-section" id="early-access">
+    <div class="container">
+      <div class="fade-in" style="max-width:720px;margin:0 auto;text-align:center;">
+
+        <!-- Badge -->
+        <span class="badge" style="background:#FEF3C7;color:#92400E;">
+          <svg viewBox="0 0 16 16" fill="currentColor" style="width:10px;height:10px;"><circle cx="8" cy="8" r="4"/></svg>
+          Beta — limited spots open
+        </span>
+
+        <h2 class="section-h2">Free while we're in beta.<br/>No catch.</h2>
+        <p class="section-sub" style="margin-bottom:48px;">
+          Tailor Hub is free to use right now while we're still growing. Sign up today, get full access to every feature, and lock in your free account before paid plans launch.
+        </p>
+
+        <!-- Perks row -->
+        <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:48px;">
+          <div style="background:#fff;border:1px solid var(--gray-100);border-radius:var(--radius-xl);padding:24px 28px;flex:1;min-width:180px;max-width:220px;">
+            <div style="width:44px;height:44px;border-radius:var(--radius-lg);background:var(--purple-50);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--purple-600)" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div style="font-size:15px;font-weight:600;color:var(--gray-900);margin-bottom:4px;">Everything free</div>
+            <div style="font-size:13px;color:var(--gray-400);line-height:1.5;">Full access to all features, no limits during beta.</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--gray-100);border-radius:var(--radius-xl);padding:24px 28px;flex:1;min-width:180px;max-width:220px;">
+            <div style="width:44px;height:44px;border-radius:var(--radius-lg);background:var(--teal-50);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--teal-600)" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div style="font-size:15px;font-weight:600;color:var(--gray-900);margin-bottom:4px;">Your data is safe</div>
+            <div style="font-size:13px;color:var(--gray-400);line-height:1.5;">Everything you add stays yours. Always.</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--gray-100);border-radius:var(--radius-xl);padding:24px 28px;flex:1;min-width:180px;max-width:220px;">
+            <div style="width:44px;height:44px;border-radius:var(--radius-lg);background:#FEF3C7;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#92400E" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div style="font-size:15px;font-weight:600;color:var(--gray-900);margin-bottom:4px;">Lock in free access</div>
+            <div style="font-size:13px;color:var(--gray-400);line-height:1.5;">Early users keep their free account when paid plans launch.</div>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <a href="register.html" class="hero-cta-primary" style="display:inline-flex;margin:0 auto;" id="early-access-cta">
+          Claim your free account
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+        <p style="font-size:13px;color:var(--gray-400);margin-top:16px;">No credit card required &nbsp;·&nbsp; Setup in 2 minutes &nbsp;·&nbsp; Cancel anytime</p>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA BANNER ── -->
+  <section class="section" style="padding-bottom: 100px;">
+    <div class="cta-banner fade-in">
+      <h2 class="cta-h2">Ready to organize your tailoring business?</h2>
+      <p class="cta-sub">Join 2,400+ tailors who use Tailor Hub every day to run a smoother, more profitable business.
+      </p>
+      <div class="cta-actions">
+        <a href="register.html" class="cta-btn-white" id="cta-banner-signup">Create your free account</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <a href="landing.html" class="brand">
+            <div class="brand-mark">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+                <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                <path d="M2 17l10 5 10-5" />
+                <path d="M2 12l10 5 10-5" />
+              </svg>
+            </div>
+            Tailor <span>Hub</span>
+          </a>
+          <p>Business management software built for tailors and fashion designers across Africa.</p>
+        </div>
+
+        <div>
+          <div class="footer-col-title">Product</div>
+          <ul class="footer-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#early-access">Early Access</a></li>
+            <li><a href="#how-it-works">How it works</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-col-title">Account</div>
+          <ul class="footer-links">
+            <li><a href="index.html">Sign in</a></li>
+            <li><a href="register.html">Register</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-col-title">Company</div>
+          <ul class="footer-links">
+            <li><a href="about.html">About</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 Tailor Hub. Crafted with care for African tailors.</span>
+        <span>Made in 🇳🇬 for the continent</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── Navbar scroll shadow ──
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 10);
+    }, { passive: true });
+
+    // ── Scroll fade-in ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // ── Hamburger (mobile) ──
+    document.getElementById('hamburger').addEventListener('click', () => {
+      const links = document.querySelector('.nav-links');
+      if (links.style.display === 'flex') {
+        links.style.display = '';
+      } else {
+        links.style.cssText = 'display:flex;flex-direction:column;position:absolute;top:64px;left:0;right:0;background:#fff;padding:16px 24px;border-bottom:1px solid rgba(0,0,0,0.08);gap:16px;z-index:99;box-shadow:0 8px 24px rgba(0,0,0,0.08);';
+      }
+    });
+  </script>
+</body>
+
+</html>
