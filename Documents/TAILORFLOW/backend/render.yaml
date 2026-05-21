@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: tailorflow-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "1440"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: tailorflow-db
+          property: connectionString
+
+databases:
+  - name: tailorflow-db
+    databaseName: tailorflow
+    user: tailorflow_user
+    plan: free
