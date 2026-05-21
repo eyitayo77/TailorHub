@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Tailor Hub</title>
+  <link rel="stylesheet" href="main.css" />
+  <link rel="stylesheet" href="components.css" />
+  <style>
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 20px;
+      font-size: 12px; font-weight: 500;
+    }
+    .status-badge.active   { background: var(--teal-50);   color: var(--teal-700);   }
+    .status-badge.inactive { background: var(--red-50);    color: var(--red-700);    }
+    .status-badge.admin    { background: var(--purple-50); color: var(--purple-700); }
+    .promote-box {
+      background: var(--amber-50);
+      border: 1px solid var(--amber-200);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 28px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div id="sidebar-root"></div>
+
+    <main class="main-content">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Admin Panel</div>
+          <div class="page-subtitle">Platform-wide management</div>
+        </div>
+      </div>
+
+      <!-- Metrics grid -->
+      <div class="metrics-grid" style="margin-bottom:28px;">
+        <div class="metric-card">
+          <div class="metric-label">Total Accounts</div>
+          <div class="metric-value" id="m-total">—</div>
+          <div class="metric-delta neutral" id="m-active-sub">— active</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Total Customers</div>
+          <div class="metric-value" id="m-customers">—</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Total Orders</div>
+          <div class="metric-value" id="m-orders">—</div>
+        </div>
+        <div class="metric-card highlighted">
+          <div class="metric-label">Platform Revenue</div>
+          <div class="metric-value" id="m-revenue">—</div>
+        </div>
+      </div>
+
+      <!-- Promote to admin (shown before first admin exists / for convenience) -->
+      <div class="promote-box" id="promote-box" style="display:none;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber-600)" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;color:var(--amber-800)">Promote your account to admin</div>
+          <div style="font-size:12px;color:var(--amber-700);margin-top:2px">Enter the ADMIN_SECRET from your server environment.</div>
+        </div>
+        <input type="password" id="promote-secret" placeholder="Admin secret" style="max-width:200px;margin:0;" />
+        <button class="btn btn-primary" id="promote-btn" onclick="promoteToAdmin()">Promote me</button>
+      </div>
+
+      <!-- Tailors table -->
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div style="padding:16px 20px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;">
+          <div style="font-size:14px;font-weight:600;" id="tailor-count">All accounts</div>
+          <input type="text" id="tailor-search" placeholder="Search by name or email…" style="max-width:280px;" />
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tailor</th>
+                <th>Email</th>
+                <th>Joined</th>
+                <th style="text-align:right">Customers</th>
+                <th style="text-align:right">Orders</th>
+                <th style="text-align:right">Revenue</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tailors-body">
+              <tr><td colspan="8"><div class="loading-state"><div class="spinner"></div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="auth.js"></script>
+  <script src="utils.js"></script>
+  <script src="api.js"></script>
+  <script src="sidebar.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

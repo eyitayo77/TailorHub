@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tailor Hub — Create Account</title>
+  <link rel="stylesheet" href="main.css" />
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-page);
+      padding: 24px;
+    }
+    .register-wrap { width: 100%; max-width: 420px; }
+    .login-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 36px; }
+    .login-logo-mark {
+      width: 36px; height: 36px;
+      background: var(--purple-600);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .login-logo-mark svg { width: 18px; height: 18px; }
+    .login-brand-name { font-size: 20px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.3px; }
+    .login-brand-name span { color: var(--purple-600); }
+    .login-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-xl);
+      padding: 32px;
+    }
+    .login-heading { font-size: 22px; font-weight: 600; letter-spacing: -0.4px; color: var(--text-primary); margin-bottom: 6px; }
+    .login-sub { font-size: 14px; color: var(--text-secondary); margin-bottom: 28px; }
+    .form-group { margin-bottom: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    label { display: block; font-size: 13px; font-weight: 500; color: var(--text-secondary); margin-bottom: 6px; }
+    input {
+      width: 100%; padding: 9px 12px;
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      font-size: 14px; font-family: var(--font-body);
+      color: var(--text-primary); background: var(--bg-surface);
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none; -webkit-appearance: none;
+    }
+    input:focus { border-color: var(--purple-400); box-shadow: 0 0 0 3px rgba(127,119,221,0.15); }
+    input::placeholder { color: var(--text-muted); }
+    .register-btn {
+      width: 100%; padding: 11px;
+      background: var(--purple-600); color: #fff;
+      border: none; border-radius: var(--radius-md);
+      font-size: 15px; font-weight: 500; font-family: var(--font-body);
+      cursor: pointer; transition: background 0.15s;
+      margin-top: 8px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .register-btn:hover { background: var(--purple-800); }
+    .register-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+    .login-footer { text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-secondary); }
+    .login-footer a { color: var(--purple-600); font-weight: 500; }
+    .error-msg {
+      background: var(--red-50); color: var(--red-600);
+      font-size: 13px; padding: 10px 14px;
+      border-radius: var(--radius-md); margin-bottom: 16px; display: none;
+    }
+    .error-msg.show { display: block; }
+  </style>
+</head>
+<body>
+  <div class="register-wrap">
+    <div class="login-brand">
+      <div class="login-logo-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div class="login-brand-name">Tailor<span>Flow</span></div>
+    </div>
+
+    <div class="login-card">
+      <div class="login-heading">Create your account</div>
+      <div class="login-sub">Set up your Tailor Hub workspace in seconds</div>
+
+      <div class="error-msg" id="error-msg"></div>
+
+      <form id="register-form" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="full-name">Full name</label>
+            <input type="text" id="full-name" placeholder="Ade Okonkwo" required />
+          </div>
+          <div class="form-group">
+            <label for="business-name">Business name</label>
+            <input type="text" id="business-name" placeholder="Ade Couture" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="reg-email">Email address</label>
+          <input type="email" id="reg-email" placeholder="you@example.com" required autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label for="reg-password">Password</label>
+          <input type="password" id="reg-password" placeholder="At least 8 characters" required />
+        </div>
+        <div class="form-group">
+          <label for="confirm-password">Confirm password</label>
+          <input type="password" id="confirm-password" placeholder="Repeat your password" required />
+        </div>
+        <button type="submit" class="register-btn" id="register-btn">Create account</button>
+      </form>
+
+      <div class="login-footer">
+        Already have an account? <a href="index.html">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="auth.js"></script>
+  <script src="api.js"></script>
+  <script>
+    Auth.redirectIfLoggedIn();
+
+    const form     = document.getElementById('register-form');
+    const btn      = document.getElementById('register-btn');
+    const errorMsg = document.getElementById('error-msg');
+
+    function showError(msg) { errorMsg.textContent = msg; errorMsg.classList.add('show'); }
+    function hideError()    { errorMsg.classList.remove('show'); }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError();
+      const name         = document.getElementById('full-name').value.trim();
+      const businessName = document.getElementById('business-name').value.trim();
+      const email        = document.getElementById('reg-email').value.trim();
+      const password     = document.getElementById('reg-password').value;
+      const confirm      = document.getElementById('confirm-password').value;
+
+      if (!name || !businessName || !email || !password) { showError('Please fill in all fields.'); return; }
+      if (password.length < 8) { showError('Password must be at least 8 characters.'); return; }
+      if (password !== confirm) { showError('Passwords do not match.'); return; }
+
+      btn.disabled    = true;
+      btn.textContent = 'Creating account…';
+
+      try {
+        const data = await API.auth.register({
+          name,
+          business_name: businessName,
+          email,
+          password,
+        });
+        Auth.setSession(data.access_token, data.user);
+        window.location.href = 'dashboard.html';
+      } catch (err) {
+        showError(err.message || 'Registration failed. Please try again.');
+        btn.disabled    = false;
+        btn.textContent = 'Create account';
+      }
+    });
+  </script>
+</body>
+</html>
