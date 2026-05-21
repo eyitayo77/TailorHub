@@ -1,0 +1,7 @@
+backend/
+*.db
+*.pyc
+__pycache__/
+.env
+.env.*
+*.md

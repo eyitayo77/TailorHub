@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orders — Tailor Hub</title>
+  <link rel="stylesheet" href="main.css" />
+  <link rel="stylesheet" href="components.css" />
+  <style>
+    .filter-tabs { display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap; }
+    .filter-tab {
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 13px; font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border-medium);
+      background: transparent; color: var(--text-secondary);
+      transition: all 0.15s;
+    }
+    .filter-tab:hover { background: var(--bg-hover); color: var(--text-primary); }
+    .filter-tab.active { background: var(--purple-600); color: #fff; border-color: var(--purple-600); }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div id="sidebar-root"></div>
+
+    <main class="main-content">
+      <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div class="page-title">Orders</div>
+          <div class="page-subtitle" id="order-count">Loading…</div>
+        </div>
+        <button class="btn btn-primary" onclick="Utils.openModal('order-modal')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New order
+        </button>
+      </div>
+
+      <!-- Ready orders banner -->
+      <div id="ready-banner" style="display:none;background:var(--amber-50);border:1px solid var(--amber-200);border-radius:var(--radius-lg);padding:12px 16px;margin-bottom:16px;display:none;align-items:center;gap:12px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber-600)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="ready-banner-text" style="font-size:13px;font-weight:500;color:var(--amber-800);flex:1"></span>
+        <button class="btn btn-secondary" style="font-size:12px;padding:4px 12px;" onclick="filterToReady()">View ready orders</button>
+      </div>
+
+      <div class="filter-tabs" id="filter-tabs">
+        <button class="filter-tab active" data-filter="all">All</button>
+        <button class="filter-tab" data-filter="pending">Pending</button>
+        <button class="filter-tab" data-filter="progress">In progress</button>
+        <button class="filter-tab" data-filter="ready">Ready</button>
+        <button class="filter-tab" data-filter="delivered">Delivered</button>
+      </div>
+
+      <div style="margin-bottom:18px;">
+        <input type="text" id="order-search" placeholder="Search by customer or garment…" style="max-width:380px;" />
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Garment</th>
+                <th>Due date</th>
+                <th>Status</th>
+                <th style="text-align:right">Total</th>
+                <th style="text-align:right">Balance</th>
+                <th style="width:32px"></th>
+              </tr>
+            </thead>
+            <tbody id="orders-body">
+              <tr><td colspan="6"><div class="loading-state"><div class="spinner"></div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- New Order Modal -->
+  <div class="modal-overlay" id="order-modal">
+    <div class="modal" style="max-width:520px;">
+      <div class="modal-header">
+        <div class="modal-title">New order</div>
+        <button class="modal-close" data-close-modal>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="order-form" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Customer name</label>
+            <input type="text" id="o-customer" placeholder="Customer name" required />
+          </div>
+          <div class="form-group">
+            <label>Garment / Item</label>
+            <input type="text" id="o-garment" placeholder="e.g. Senator suit" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Total price (₦)</label>
+            <input type="number" id="o-total" placeholder="25000" required min="0" />
+          </div>
+          <div class="form-group">
+            <label>Deposit paid (₦)</label>
+            <input type="number" id="o-deposit" placeholder="10000" min="0" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Due date</label>
+            <input type="date" id="o-due" required />
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select id="o-status">
+              <option value="pending">Pending</option>
+              <option value="progress">In progress</option>
+              <option value="ready">Ready</option>
+              <option value="delivered">Delivered</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Measurements / Notes</label>
+          <textarea id="o-notes" placeholder="Any measurements or special instructions…"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary" id="o-save-btn">Create order</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Order Detail Modal -->
+  <div class="modal-overlay" id="order-detail-modal">
+    <div class="modal" style="max-width:480px;">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title" id="od-title">Order</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:2px" id="od-subtitle"></div>
+        </div>
+        <button class="modal-close" data-close-modal>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <!-- Info row -->
+      <div style="display:flex;gap:12px;margin-bottom:20px;">
+        <div style="flex:1;background:var(--bg-sunken);border-radius:var(--radius-md);padding:12px;">
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:2px">Total</div>
+          <div style="font-size:15px;font-weight:600;color:var(--text-primary)" id="od-total">—</div>
+        </div>
+        <div style="flex:1;background:var(--bg-sunken);border-radius:var(--radius-md);padding:12px;">
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:2px">Balance due</div>
+          <div style="font-size:15px;font-weight:600;color:var(--text-primary)" id="od-balance">—</div>
+        </div>
+        <div style="flex:1;background:var(--bg-sunken);border-radius:var(--radius-md);padding:12px;">
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:2px">Due date</div>
+          <div style="font-size:15px;font-weight:600;color:var(--text-primary)" id="od-due">—</div>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div id="od-notes-wrap" style="display:none;margin-bottom:20px;">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin-bottom:6px;">Notes</div>
+        <div style="font-size:13px;color:var(--text-secondary);background:var(--bg-sunken);border-radius:var(--radius-md);padding:10px 12px;" id="od-notes"></div>
+      </div>
+
+      <!-- Status update -->
+      <div style="margin-bottom:4px;">
+        <label style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:8px;">Update status</label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <select id="od-status" style="flex:1;">
+            <option value="pending">Pending</option>
+            <option value="progress">In progress</option>
+            <option value="ready">Ready for pickup</option>
+            <option value="delivered">Delivered</option>
+          </select>
+          <button class="btn btn-primary" id="od-save-btn" onclick="saveOrderStatus()">Save</button>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="margin-top:20px;">
+        <button type="button" class="btn btn-secondary" data-close-modal>Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="auth.js"></script>
+  <script src="utils.js"></script>
+  <script src="api.js"></script>
+  <script src="sidebar.js"></script>
+  <script src="orders.js"></script>
+</body>
+</html>
