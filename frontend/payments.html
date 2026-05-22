@@ -8,6 +8,31 @@
   <link rel="stylesheet" href="main.css" />
   <link rel="stylesheet" href="components.css" />
   <style>
+    /* ── Payments table: amount column ── */
+    .td-amount {
+      white-space: nowrap;
+      font-size: 13px;
+    }
+
+    /* ── Mobile: hide least important columns ── */
+    @media (max-width: 768px) {
+      /* Hide Note and Method columns */
+      table thead th:nth-child(4),
+      table thead th:nth-child(6),
+      table tbody td:nth-child(4),
+      table tbody td:nth-child(6) {
+        display: none;
+      }
+      /* Give the table enough room for remaining columns */
+      .table-wrap table { min-width: 400px; }
+
+      /* Amount: right-align and don't shrink */
+      .td-amount { font-size: 13px; white-space: nowrap; }
+
+      /* Metrics: 2x2 */
+      #metrics-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    }
+
     /* ── Page-specific overrides ─────────────────────── */
     .pay-toolbar {
       display: flex;
@@ -144,7 +169,7 @@
       </div>
 
       <!-- ── Summary cards ────────────────────────────── -->
-      <div class="metrics-grid" id="metrics-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));">
+      <div class="metrics-grid" id="metrics-grid">
         <div class="metric-card highlight">
           <div class="metric-label">Total collected</div>
           <div class="metric-value" id="p-total">—</div>
