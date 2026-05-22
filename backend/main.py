@@ -22,14 +22,10 @@ app = FastAPI(
 )
 
 # ── CORS ──────────────────────────────────────────────────────────
-# Allow the frontend to call the API from any origin during development.
-# Tighten this to your Netlify / GitHub Pages URL in production.
-FRONTEND_URL = os.getenv("FRONTEND_URL", "*")
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONTEND_URL] if FRONTEND_URL != "*" else ["*"],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
