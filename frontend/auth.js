@@ -30,7 +30,7 @@ const Auth = (() => {
 
   function requireAuth() {
     if (!isLoggedIn()) {
-      window.location.href = 'index.html';
+      window.location.href = 'login.html';
       return false;
     }
     return true;
@@ -44,7 +44,7 @@ const Auth = (() => {
 
   async function logout() {
     clearSession();
-    window.location.href = 'index.html';
+    window.location.href = 'login.html';
   }
 
   function populateSidebarUser() {

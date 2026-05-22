@@ -16,7 +16,7 @@ const API = (() => {
 
     if (res.status === 401) {
       Auth.clearSession();
-      window.location.href = 'index.html';
+      window.location.href = 'login.html';
       return;
     }
 
