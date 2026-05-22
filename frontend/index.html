@@ -1158,6 +1158,8 @@
       gap: 5px;
       cursor: pointer;
       padding: 6px;
+      background: none;
+      border: none;
     }
 
     .hamburger span {
@@ -1166,18 +1168,100 @@
       height: 2px;
       background: var(--gray-800);
       border-radius: 2px;
-      transition: transform 0.2s;
+      transition: transform 0.25s, opacity 0.25s;
+    }
+
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ── Mobile menu drawer ── */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 64px;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-bottom: 1px solid var(--gray-100);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+      z-index: 99;
+      padding: 20px 24px 28px;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .mobile-menu.open { display: flex; }
+
+    .mobile-menu a {
+      display: block;
+      padding: 12px 4px;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--gray-700, #444);
+      border-bottom: 1px solid var(--gray-100);
+      transition: color 0.15s;
+    }
+
+    .mobile-menu a:last-of-type { border-bottom: none; }
+    .mobile-menu a:hover { color: var(--purple-600); }
+
+    .mobile-menu-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--gray-100);
+    }
+
+    .mobile-menu-actions .btn-ghost {
+      text-align: center;
+      padding: 12px;
+      font-size: 15px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-md);
+    }
+
+    .mobile-menu-actions .btn-primary {
+      text-align: center;
+      padding: 13px;
+      font-size: 15px;
     }
 
     /* ── Responsive ── */
     @media (max-width: 900px) {
+      .hero {
+        padding: 110px 0 70px;
+      }
+
       .hero-inner {
         grid-template-columns: 1fr;
-        gap: 40px;
+        gap: 48px;
+        text-align: center;
+      }
+
+      .hero-ctas {
+        justify-content: center;
+      }
+
+      .hero-trust {
+        justify-content: center;
+      }
+
+      .hero-sub {
+        margin-left: auto;
+        margin-right: auto;
       }
 
       .hero-card {
         transform: none !important;
+        max-width: 540px;
+        margin: 0 auto;
+      }
+
+      .chip-1, .chip-2 {
+        display: none;
       }
 
       .features-grid {
@@ -1190,6 +1274,7 @@
 
       .steps {
         grid-template-columns: 1fr;
+        gap: 24px;
       }
 
       .steps::before {
@@ -1202,7 +1287,7 @@
 
       .pricing-grid {
         grid-template-columns: 1fr;
-        max-width: 420px;
+        max-width: 440px;
         margin: 0 auto;
       }
 
@@ -1211,16 +1296,53 @@
         gap: 32px;
       }
 
-      .nav-links {
+      .section {
+        padding: 70px 0;
+      }
+
+      .how-section {
+        padding: 70px 0;
+      }
+
+      .nav-links,
+      .nav-actions {
         display: none;
       }
 
       .hamburger {
         display: flex;
       }
+
+      .social-proof-inner {
+        gap: 24px;
+      }
     }
 
     @media (max-width: 600px) {
+      .hero {
+        padding: 90px 0 60px;
+      }
+
+      .hero-h1 {
+        font-size: clamp(30px, 8vw, 40px);
+        letter-spacing: -1px;
+      }
+
+      .hero-sub {
+        font-size: 16px;
+      }
+
+      .hero-ctas {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .hero-cta-primary,
+      .hero-cta-secondary {
+        justify-content: center;
+        text-align: center;
+      }
+
       .features-grid {
         grid-template-columns: 1fr;
       }
@@ -1231,10 +1353,41 @@
 
       .footer-inner {
         grid-template-columns: 1fr;
+        gap: 28px;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
       }
 
       .cta-banner {
-        padding: 48px 24px;
+        padding: 48px 20px;
+        margin: 0 12px;
+        border-radius: var(--radius-xl);
+      }
+
+      .cta-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .cta-btn-white,
+      .cta-btn-outline {
+        text-align: center;
+      }
+
+      .section {
+        padding: 56px 0;
+      }
+
+      .how-section {
+        padding: 56px 0;
+      }
+
+      .section-header {
+        margin-bottom: 40px;
       }
 
       .mockup-metrics {
@@ -1250,6 +1403,23 @@
       .mockup-table-row :last-child {
         display: none;
       }
+
+      .social-proof-inner {
+        gap: 20px;
+      }
+
+      .social-proof-text {
+        width: 100%;
+        text-align: center;
+      }
+
+      .pricing-grid {
+        max-width: 100%;
+      }
+
+      .container {
+        padding: 0 16px;
+      }
     }
   </style>
 </head>
@@ -1259,7 +1429,7 @@
   <!-- ── NAV ── -->
   <nav class="nav" id="nav" role="navigation" aria-label="Main navigation">
     <div class="container nav-inner">
-      <a href="landing.html" class="brand" id="nav-brand">
+      <a href="index.html" class="brand" id="nav-brand">
         <div class="brand-mark">
           <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
             <path d="M12 2L2 7l10 5 10-5-10-5z" />
@@ -1287,6 +1457,18 @@
       </button>
     </div>
   </nav>
+
+  <!-- ── MOBILE MENU DRAWER ── -->
+  <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Mobile navigation">
+    <a href="#features" class="mobile-menu-link">Features</a>
+    <a href="#how-it-works" class="mobile-menu-link">How it works</a>
+    <a href="#testimonials" class="mobile-menu-link">Reviews</a>
+    <a href="#early-access" class="mobile-menu-link">Early Access</a>
+    <div class="mobile-menu-actions">
+      <a href="login.html" class="btn-ghost">Sign in</a>
+      <a href="register.html" class="btn-primary">Get started free</a>
+    </div>
+  </div>
 
   <!-- ── HERO ── -->
   <section class="hero" id="hero">
@@ -1825,13 +2007,22 @@
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
     // ── Hamburger (mobile) ──
-    document.getElementById('hamburger').addEventListener('click', () => {
-      const links = document.querySelector('.nav-links');
-      if (links.style.display === 'flex') {
-        links.style.display = '';
-      } else {
-        links.style.cssText = 'display:flex;flex-direction:column;position:absolute;top:64px;left:0;right:0;background:#fff;padding:16px 24px;border-bottom:1px solid rgba(0,0,0,0.08);gap:16px;z-index:99;box-shadow:0 8px 24px rgba(0,0,0,0.08);';
-      }
+    const hamburger  = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    hamburger.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('open');
+      hamburger.classList.toggle('open', isOpen);
+      hamburger.setAttribute('aria-expanded', isOpen);
+    });
+
+    // Close menu when a link is clicked
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        hamburger.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', false);
+      });
     });
   </script>
 </body>
