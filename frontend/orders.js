@@ -145,6 +145,10 @@ function openOrderDetail(id) {
   document.getElementById('od-due').textContent      = Utils.formatDateShort(o.due_date);
   document.getElementById('od-status').value         = o.status;
 
+  // Show "Mark as fully paid" button only when there's an outstanding balance
+  const markPaidBtn = document.getElementById('od-mark-paid-btn');
+  markPaidBtn.style.display = o.balance > 0 ? 'inline-flex' : 'none';
+
   const notesWrap = document.getElementById('od-notes-wrap');
   if (o.notes) {
     document.getElementById('od-notes').textContent = o.notes;
@@ -154,6 +158,39 @@ function openOrderDetail(id) {
   }
 
   Utils.openModal('order-detail-modal');
+}
+
+async function markFullyPaid() {
+  if (!activeOrderId) return;
+  const o = allOrders.find(x => x.id === activeOrderId);
+  if (!o || o.balance <= 0) return;
+
+  const btn = document.getElementById('od-mark-paid-btn');
+  Utils.setLoading(btn, true);
+
+  try {
+    // Record a payment for the exact remaining balance
+    await API.payments.recordPayment(activeOrderId, {
+      amount: o.balance,
+      type:   'balance',
+      method: 'Transfer',
+      note:   'Marked as fully paid',
+    });
+
+    // Update local state
+    o.balance = 0;
+    o.amount_paid = o.total;
+
+    // Refresh display
+    document.getElementById('od-balance').textContent = 'Paid ✓';
+    btn.style.display = 'none';
+    applyFilters();
+    Utils.toast(`${o.customer_name}'s order marked as fully paid ✓`, 'success');
+  } catch (err) {
+    Utils.toast(err.message, 'error');
+  } finally {
+    Utils.setLoading(btn, false);
+  }
 }
 
 async function saveOrderStatus() {
