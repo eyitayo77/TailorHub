@@ -44,7 +44,7 @@ const Auth = (() => {
 
   async function logout() {
     clearSession();
-    window.location.href = 'login.html';
+    window.location.href = 'index.html';
   }
 
   function populateSidebarUser() {
