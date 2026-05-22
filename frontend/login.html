@@ -238,9 +238,6 @@
         </div>
       </form>
 
-      <div class="divider">or</div>
-      <button class="demo-btn" id="demo-btn">Continue with demo account</button>
-
       <div class="login-footer">
         Don't have an account? <a href="register.html">Create one</a>
       </div>
@@ -256,7 +253,6 @@
     const form     = document.getElementById('login-form');
     const loginBtn = document.getElementById('login-btn');
     const errorMsg = document.getElementById('error-msg');
-    const demoBtn  = document.getElementById('demo-btn');
 
     function showError(msg) {
       errorMsg.textContent = msg;
@@ -285,12 +281,6 @@
       }
     });
 
-    // Demo: pre-fill credentials (create this account via /api/auth/register first)
-    demoBtn.addEventListener('click', () => {
-      document.getElementById('email').value    = 'demo@tailorflow.ng';
-      document.getElementById('password').value = 'demo1234';
-      form.dispatchEvent(new Event('submit'));
-    });
   </script>
 </body>
 
