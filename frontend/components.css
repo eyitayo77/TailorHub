@@ -848,3 +848,74 @@ textarea { resize: vertical; min-height: 80px; }
 @media (max-width: 768px) {
   .mobile-bottom-nav { display: flex; }
 }
+
+/* ── Mobile More Sheet ─────────────────────────────── */
+#mob-more-sheet {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+}
+#mob-more-sheet.open { display: block; }
+
+.mob-sheet-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+}
+
+.mob-sheet-panel {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: var(--bg-surface);
+  border-radius: 20px 20px 0 0;
+  padding: 8px 12px calc(80px + env(safe-area-inset-bottom, 0px));
+  box-shadow: var(--shadow-md);
+  transform: translateY(100%);
+  transition: transform 0.25s ease;
+}
+#mob-more-sheet.open .mob-sheet-panel { transform: translateY(0); }
+
+.mob-sheet-handle {
+  width: 36px; height: 4px;
+  background: var(--gray-200);
+  border-radius: 4px;
+  margin: 0 auto 16px;
+}
+
+.mob-sheet-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 8px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: background var(--transition);
+  text-decoration: none;
+}
+.mob-sheet-item:active { background: var(--bg-hover); }
+.mob-sheet-item--active { color: var(--purple-600); }
+.mob-sheet-item--active .mob-sheet-icon { background: var(--purple-50); }
+.mob-sheet-item--active .mob-sheet-icon svg { stroke: var(--purple-600); }
+
+.mob-sheet-icon {
+  width: 38px; height: 38px;
+  border-radius: var(--radius-md);
+  background: var(--bg-sunken);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.mob-sheet-icon svg { width: 18px; height: 18px; }
+
+.mob-sheet-divider { height: 1px; background: var(--border-light); margin: 6px 0; }
+
+.mob-sheet-signout { color: var(--red-600); }
+.mob-sheet-signout .mob-sheet-icon { background: var(--red-50); }
+.mob-sheet-signout .mob-sheet-icon svg { stroke: var(--red-400); }
