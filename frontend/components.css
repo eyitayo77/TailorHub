@@ -298,6 +298,8 @@
 }
 .btn-ghost:hover { background: var(--bg-hover); color: var(--text-primary); }
 
+.btn-sm { padding: 6px 12px; font-size: 13px; }
+
 .btn-danger {
   background: var(--red-50);
   color: var(--red-600);
@@ -392,6 +394,13 @@ input:focus, select:focus, textarea:focus {
 }
 
 input::placeholder, textarea::placeholder { color: var(--text-muted); }
+
+input:disabled, select:disabled, textarea:disabled {
+  background: var(--bg-sunken);
+  color: var(--text-secondary);
+  cursor: default;
+  border-color: var(--border-light);
+}
 
 textarea { resize: vertical; min-height: 80px; }
 

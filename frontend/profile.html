@@ -7,34 +7,76 @@
   <link rel="stylesheet" href="main.css" />
   <link rel="stylesheet" href="components.css" />
   <style>
+    .profile-wrap {
+      max-width: 620px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ── Hero card ── */
     .profile-hero {
       display: flex;
       align-items: center;
-      gap: 20px;
-      margin-bottom: 28px;
+      gap: 18px;
     }
-    .profile-avatar-lg {
-      width: 68px;
-      height: 68px;
+    .profile-avatar-xl {
+      width: 62px;
+      height: 62px;
       border-radius: 50%;
       background: var(--purple-600);
       color: #fff;
-      font-size: 26px;
+      font-size: 22px;
       font-weight: 600;
+      letter-spacing: -0.5px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
     }
-    .profile-hero-name { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
-    .profile-hero-email { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+    .profile-hero-name {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      color: var(--text-primary);
+      margin-bottom: 3px;
+    }
+    .profile-hero-biz {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--purple-600);
+      margin-bottom: 2px;
+    }
+    .profile-hero-email {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
 
-    .profile-section { max-width: 560px; margin-bottom: 20px; }
-    .profile-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .save-row { display: flex; gap: 8px; margin-top: 18px; }
+    /* ── Section divider ── */
+    .section-divider {
+      height: 1px;
+      background: var(--border-light);
+      margin: 4px 0 20px;
+    }
 
-    @media (max-width: 540px) {
-      .profile-fields { grid-template-columns: 1fr; }
+    /* ── Action row ── */
+    .profile-actions {
+      display: flex;
+      gap: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border-light);
+      margin-top: 4px;
+    }
+
+    /* ── Security hint ── */
+    .security-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr !important; }
     }
   </style>
 </head>
@@ -48,67 +90,93 @@
         <div class="page-subtitle">View and update your account details</div>
       </div>
 
-      <div class="profile-hero">
-        <div class="profile-avatar-lg" id="profile-avatar-lg">TH</div>
-        <div>
-          <div class="profile-hero-name" id="profile-hero-name">Loading…</div>
-          <div class="profile-hero-email" id="profile-hero-email">—</div>
-        </div>
-      </div>
+      <div class="profile-wrap">
 
-      <!-- Account info -->
-      <div class="card profile-section">
-        <div class="card-header">
-          <div class="card-title">Account information</div>
-          <button class="btn btn-ghost btn-sm" id="edit-toggle-btn">Edit</button>
+        <!-- Hero card -->
+        <div class="card">
+          <div class="profile-hero">
+            <div class="profile-avatar-xl" id="profile-avatar-xl">TH</div>
+            <div>
+              <div class="profile-hero-name" id="profile-hero-name">Loading…</div>
+              <div class="profile-hero-biz" id="profile-hero-biz"></div>
+              <div class="profile-hero-email" id="profile-hero-email">—</div>
+            </div>
+          </div>
         </div>
-        <form id="profile-form">
-          <div class="profile-fields">
-            <div class="form-group">
-              <label class="form-label">Full name</label>
-              <input type="text" id="pf-name" class="form-input" disabled />
-            </div>
-            <div class="form-group">
-              <label class="form-label">Business name</label>
-              <input type="text" id="pf-business" class="form-input" disabled />
-            </div>
-            <div class="form-group">
-              <label class="form-label">Email address</label>
-              <input type="email" id="pf-email" class="form-input" disabled />
-            </div>
-            <div class="form-group">
-              <label class="form-label">Phone number</label>
-              <input type="text" id="pf-phone" class="form-input" placeholder="—" disabled />
-            </div>
-          </div>
-          <div class="save-row" id="profile-save-row" style="display:none">
-            <button type="submit" class="btn btn-primary btn-sm">Save changes</button>
-            <button type="button" class="btn btn-ghost btn-sm" id="cancel-edit-btn">Cancel</button>
-          </div>
-        </form>
-      </div>
 
-      <!-- Change password -->
-      <div class="card profile-section">
-        <div class="card-header">
-          <div class="card-title">Change password</div>
+        <!-- Account information -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Account information</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:1px">Your name and business details</div>
+            </div>
+            <button class="btn btn-ghost btn-sm" id="edit-toggle-btn">Edit</button>
+          </div>
+
+          <div class="section-divider"></div>
+
+          <form id="profile-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Full name</label>
+                <input type="text" id="pf-name" disabled />
+              </div>
+              <div class="form-group">
+                <label>Business name</label>
+                <input type="text" id="pf-business" disabled />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group" style="margin-bottom:0">
+                <label>Email address</label>
+                <input type="email" id="pf-email" disabled />
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label>Phone number</label>
+                <input type="text" id="pf-phone" disabled placeholder="Not set" />
+              </div>
+            </div>
+            <div class="profile-actions" id="profile-save-row" style="display:none">
+              <button type="submit" class="btn btn-primary btn-sm">Save changes</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="cancel-edit-btn">Cancel</button>
+            </div>
+          </form>
         </div>
-        <form id="password-form">
-          <div class="form-group" style="margin-bottom:12px">
-            <label class="form-label">Current password</label>
-            <input type="password" id="pw-current" class="form-input" placeholder="Enter current password" />
+
+        <!-- Security -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Security</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:1px">Change your account password</div>
+            </div>
           </div>
-          <div class="form-group" style="margin-bottom:12px">
-            <label class="form-label">New password</label>
-            <input type="password" id="pw-new" class="form-input" placeholder="At least 8 characters" />
-          </div>
-          <div class="form-group" style="margin-bottom:18px">
-            <label class="form-label">Confirm new password</label>
-            <input type="password" id="pw-confirm" class="form-input" placeholder="Repeat new password" />
-          </div>
-          <button type="submit" class="btn btn-primary btn-sm" id="pw-submit-btn">Update password</button>
-        </form>
-      </div>
+
+          <div class="section-divider"></div>
+
+          <form id="password-form">
+            <div class="form-group">
+              <label>Current password</label>
+              <input type="password" id="pw-current" placeholder="Enter your current password" />
+            </div>
+            <div class="form-row">
+              <div class="form-group" style="margin-bottom:0">
+                <label>New password</label>
+                <input type="password" id="pw-new" placeholder="At least 8 characters" />
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label>Confirm new password</label>
+                <input type="password" id="pw-confirm" placeholder="Repeat new password" />
+              </div>
+            </div>
+            <div class="profile-actions">
+              <button type="submit" class="btn btn-primary btn-sm" id="pw-submit-btn">Update password</button>
+            </div>
+          </form>
+        </div>
+
+      </div><!-- /.profile-wrap -->
     </main>
   </div>
 
@@ -127,8 +195,9 @@
 
       function populateDisplay(u) {
         const initials = (u.name || 'TH').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-        document.getElementById('profile-avatar-lg').textContent = initials;
-        document.getElementById('profile-hero-name').textContent = u.name || '—';
+        document.getElementById('profile-avatar-xl').textContent  = initials;
+        document.getElementById('profile-hero-name').textContent  = u.name || '—';
+        document.getElementById('profile-hero-biz').textContent   = u.business_name || '';
         document.getElementById('profile-hero-email').textContent = u.email || '—';
       }
 
@@ -145,17 +214,20 @@
       const editBtn   = document.getElementById('edit-toggle-btn');
       const saveRow   = document.getElementById('profile-save-row');
       const cancelBtn = document.getElementById('cancel-edit-btn');
-      const formInputs = () => document.querySelectorAll('#profile-form input:not([type="email"])');
+
+      function editableInputs() {
+        return document.querySelectorAll('#profile-form input:not([type="email"])');
+      }
 
       editBtn.addEventListener('click', () => {
-        formInputs().forEach(i => i.disabled = false);
+        editableInputs().forEach(i => i.disabled = false);
         saveRow.style.display = 'flex';
         editBtn.style.display = 'none';
       });
 
       cancelBtn.addEventListener('click', () => {
         populateForm(user);
-        formInputs().forEach(i => i.disabled = true);
+        editableInputs().forEach(i => i.disabled = true);
         saveRow.style.display = 'none';
         editBtn.style.display = '';
       });
@@ -174,7 +246,7 @@
           user = updated;
           populateDisplay(updated);
           populateForm(updated);
-          formInputs().forEach(i => i.disabled = true);
+          editableInputs().forEach(i => i.disabled = true);
           saveRow.style.display = 'none';
           editBtn.style.display = '';
           U.toast('Profile updated', 'success');
