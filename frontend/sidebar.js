@@ -51,17 +51,27 @@ const Sidebar = (() => {
 
         <div class="sidebar-spacer"></div>
 
-        <a href="profile.html" class="sidebar-user" id="sidebar-user-btn">
-          <div class="avatar avatar-purple" id="sidebar-avatar">AO</div>
-          <div>
-            <div class="sidebar-user-name" id="sidebar-user-name">Loading…</div>
-            <div class="sidebar-user-role" id="sidebar-user-role">Tailor</div>
+        <div class="sidebar-profile-wrap">
+          <div class="sidebar-profile-menu" id="sidebar-profile-menu">
+            <a href="profile.html" class="sidebar-profile-menu-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              My profile
+            </a>
+            <div class="sidebar-profile-menu-divider"></div>
+            <button class="sidebar-profile-menu-item sidebar-profile-menu-signout" id="sidebar-signout-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Sign out
+            </button>
           </div>
-        </a>
-        <button class="sidebar-signout" id="sidebar-signout-btn">
-          <span class="sidebar-signout-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span>
-          Sign out
-        </button>
+          <div class="sidebar-user" id="sidebar-user-btn">
+            <div class="avatar avatar-purple" id="sidebar-avatar">AO</div>
+            <div style="flex:1;min-width:0">
+              <div class="sidebar-user-name" id="sidebar-user-name">Loading…</div>
+              <div class="sidebar-user-role" id="sidebar-user-role">Tailor</div>
+            </div>
+            <svg class="sidebar-user-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
       </aside>`;
   }
 
@@ -70,6 +80,16 @@ const Sidebar = (() => {
     if (target) target.innerHTML = render(activePage);
 
     Auth.populateSidebarUser();
+
+    const profileBtn  = document.getElementById('sidebar-user-btn');
+    const profileMenu = document.getElementById('sidebar-profile-menu');
+    if (profileBtn && profileMenu) {
+      profileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        profileMenu.classList.toggle('open');
+      });
+      document.addEventListener('click', () => profileMenu.classList.remove('open'));
+    }
 
     const signoutBtn = document.getElementById('sidebar-signout-btn');
     if (signoutBtn) {
