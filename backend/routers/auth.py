@@ -7,8 +7,9 @@ from sqlalchemy.orm import Session
 
 from database import get_db
 from models import Tailor
-from schemas import RegisterRequest, LoginRequest, AuthResponse, TailorOut, ForgotPasswordRequest, ResetPasswordRequest
+from schemas import RegisterRequest, LoginRequest, AuthResponse, TailorOut, ForgotPasswordRequest, ResetPasswordRequest, UpdateProfileRequest, ChangePasswordRequest
 from auth.utils import hash_password, verify_password, create_access_token
+from auth.dependencies import get_current_tailor
 
 router = APIRouter(prefix="/api/auth", tags=["Auth"])
 
@@ -141,6 +142,38 @@ def reset_password(payload: ResetPasswordRequest, db: Session = Depends(get_db))
 
 
 @router.get("/me", response_model=TailorOut)
-def get_me(db: Session = Depends(get_db)):
-    """Health-check endpoint — used by frontend to validate token on load."""
-    raise HTTPException(status_code=401, detail="Use Authorization header.")
+def get_me(tailor: Tailor = Depends(get_current_tailor)):
+    """Return the currently authenticated tailor's profile."""
+    return tailor
+
+
+@router.patch("/profile", response_model=TailorOut)
+def update_profile(
+    payload: UpdateProfileRequest,
+    tailor: Tailor = Depends(get_current_tailor),
+    db: Session = Depends(get_db),
+):
+    """Update name, business name, or phone for the current tailor."""
+    if payload.name is not None:
+        tailor.name = payload.name.strip()
+    if payload.business_name is not None:
+        tailor.business_name = payload.business_name.strip() or None
+    if payload.phone is not None:
+        tailor.phone = payload.phone.strip() or None
+    db.commit()
+    db.refresh(tailor)
+    return tailor
+
+
+@router.post("/change-password")
+def change_password(
+    payload: ChangePasswordRequest,
+    tailor: Tailor = Depends(get_current_tailor),
+    db: Session = Depends(get_db),
+):
+    """Change password after verifying the current one."""
+    if not verify_password(payload.current_password, tailor.password_hash):
+        raise HTTPException(status_code=400, detail="Current password is incorrect.")
+    tailor.password_hash = hash_password(payload.new_password)
+    db.commit()
+    return {"message": "Password updated successfully."}

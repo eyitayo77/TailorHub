@@ -23,6 +23,15 @@ class ResetPasswordRequest(BaseModel):
     token:    str
     password: str = Field(min_length=8)
 
+class UpdateProfileRequest(BaseModel):
+    name:          Optional[str] = None
+    business_name: Optional[str] = None
+    phone:         Optional[str] = None
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password:     str = Field(min_length=8)
+
 class TailorOut(BaseModel):
     id:            str
     name:          str

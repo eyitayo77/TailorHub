@@ -48,13 +48,17 @@ const Sidebar = (() => {
 
         <div class="sidebar-spacer"></div>
 
-        <div class="sidebar-user" id="sidebar-user-btn">
+        <a href="profile.html" class="sidebar-user" id="sidebar-user-btn">
           <div class="avatar avatar-purple" id="sidebar-avatar">AO</div>
           <div>
             <div class="sidebar-user-name" id="sidebar-user-name">Loading…</div>
             <div class="sidebar-user-role" id="sidebar-user-role">Tailor</div>
           </div>
-        </div>
+        </a>
+        <button class="sidebar-signout" id="sidebar-signout-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Sign out
+        </button>
       </aside>`;
   }
 
@@ -64,11 +68,9 @@ const Sidebar = (() => {
 
     Auth.populateSidebarUser();
 
-    const logoutBtn = document.getElementById('sidebar-user-btn');
-    if (logoutBtn) {
-      logoutBtn.title = 'Click to sign out';
-      logoutBtn.style.cursor = 'pointer';
-      logoutBtn.addEventListener('click', () => {
+    const signoutBtn = document.getElementById('sidebar-signout-btn');
+    if (signoutBtn) {
+      signoutBtn.addEventListener('click', () => {
         if (confirm('Sign out of Tailor Hub?')) Auth.logout();
       });
     }

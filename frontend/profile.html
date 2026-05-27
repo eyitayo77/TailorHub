@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Profile — Tailor Hub</title>
+  <link rel="stylesheet" href="main.css" />
+  <link rel="stylesheet" href="components.css" />
+  <style>
+    .profile-hero {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+    .profile-avatar-lg {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: var(--purple-600);
+      color: #fff;
+      font-size: 26px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .profile-hero-name { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
+    .profile-hero-email { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+
+    .profile-section { max-width: 560px; margin-bottom: 20px; }
+    .profile-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .save-row { display: flex; gap: 8px; margin-top: 18px; }
+
+    @media (max-width: 540px) {
+      .profile-fields { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div id="sidebar-root"></div>
+
+    <main class="main-content">
+      <div class="page-header">
+        <div class="page-title">My Profile</div>
+        <div class="page-subtitle">View and update your account details</div>
+      </div>
+
+      <div class="profile-hero">
+        <div class="profile-avatar-lg" id="profile-avatar-lg">TH</div>
+        <div>
+          <div class="profile-hero-name" id="profile-hero-name">Loading…</div>
+          <div class="profile-hero-email" id="profile-hero-email">—</div>
+        </div>
+      </div>
+
+      <!-- Account info -->
+      <div class="card profile-section">
+        <div class="card-header">
+          <div class="card-title">Account information</div>
+          <button class="btn btn-ghost btn-sm" id="edit-toggle-btn">Edit</button>
+        </div>
+        <form id="profile-form">
+          <div class="profile-fields">
+            <div class="form-group">
+              <label class="form-label">Full name</label>
+              <input type="text" id="pf-name" class="form-input" disabled />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Business name</label>
+              <input type="text" id="pf-business" class="form-input" disabled />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email address</label>
+              <input type="email" id="pf-email" class="form-input" disabled />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone number</label>
+              <input type="text" id="pf-phone" class="form-input" placeholder="—" disabled />
+            </div>
+          </div>
+          <div class="save-row" id="profile-save-row" style="display:none">
+            <button type="submit" class="btn btn-primary btn-sm">Save changes</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="cancel-edit-btn">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Change password -->
+      <div class="card profile-section">
+        <div class="card-header">
+          <div class="card-title">Change password</div>
+        </div>
+        <form id="password-form">
+          <div class="form-group" style="margin-bottom:12px">
+            <label class="form-label">Current password</label>
+            <input type="password" id="pw-current" class="form-input" placeholder="Enter current password" />
+          </div>
+          <div class="form-group" style="margin-bottom:12px">
+            <label class="form-label">New password</label>
+            <input type="password" id="pw-new" class="form-input" placeholder="At least 8 characters" />
+          </div>
+          <div class="form-group" style="margin-bottom:18px">
+            <label class="form-label">Confirm new password</label>
+            <input type="password" id="pw-confirm" class="form-input" placeholder="Repeat new password" />
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm" id="pw-submit-btn">Update password</button>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="auth.js"></script>
+  <script src="utils.js"></script>
+  <script src="api.js"></script>
+  <script src="sidebar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!Auth.requireAuth()) return;
+      Sidebar.init('profile.html');
+
+      let user = Auth.getUser();
+      if (!user) return;
+
+      function populateDisplay(u) {
+        const initials = (u.name || 'TH').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+        document.getElementById('profile-avatar-lg').textContent = initials;
+        document.getElementById('profile-hero-name').textContent = u.name || '—';
+        document.getElementById('profile-hero-email').textContent = u.email || '—';
+      }
+
+      function populateForm(u) {
+        document.getElementById('pf-name').value     = u.name || '';
+        document.getElementById('pf-business').value = u.business_name || '';
+        document.getElementById('pf-email').value    = u.email || '';
+        document.getElementById('pf-phone').value    = u.phone || '';
+      }
+
+      populateDisplay(user);
+      populateForm(user);
+
+      const editBtn   = document.getElementById('edit-toggle-btn');
+      const saveRow   = document.getElementById('profile-save-row');
+      const cancelBtn = document.getElementById('cancel-edit-btn');
+      const formInputs = () => document.querySelectorAll('#profile-form input:not([type="email"])');
+
+      editBtn.addEventListener('click', () => {
+        formInputs().forEach(i => i.disabled = false);
+        saveRow.style.display = 'flex';
+        editBtn.style.display = 'none';
+      });
+
+      cancelBtn.addEventListener('click', () => {
+        populateForm(user);
+        formInputs().forEach(i => i.disabled = true);
+        saveRow.style.display = 'none';
+        editBtn.style.display = '';
+      });
+
+      document.getElementById('profile-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = e.submitter;
+        U.setLoading(btn, true);
+        try {
+          const updated = await API.auth.updateProfile({
+            name:          document.getElementById('pf-name').value.trim(),
+            business_name: document.getElementById('pf-business').value.trim() || null,
+            phone:         document.getElementById('pf-phone').value.trim() || null,
+          });
+          Auth.setSession(Auth.getToken(), updated);
+          user = updated;
+          populateDisplay(updated);
+          populateForm(updated);
+          formInputs().forEach(i => i.disabled = true);
+          saveRow.style.display = 'none';
+          editBtn.style.display = '';
+          U.toast('Profile updated', 'success');
+        } catch (err) {
+          U.toast(err.message, 'error');
+        } finally {
+          U.setLoading(btn, false);
+        }
+      });
+
+      document.getElementById('password-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const newPwd     = document.getElementById('pw-new').value;
+        const confirmPwd = document.getElementById('pw-confirm').value;
+        if (newPwd !== confirmPwd) { U.toast('Passwords do not match', 'error'); return; }
+        if (newPwd.length < 8)    { U.toast('Password must be at least 8 characters', 'error'); return; }
+        const btn = document.getElementById('pw-submit-btn');
+        U.setLoading(btn, true);
+        try {
+          await API.auth.changePassword({
+            current_password: document.getElementById('pw-current').value,
+            new_password:     newPwd,
+          });
+          U.toast('Password updated', 'success');
+          document.getElementById('password-form').reset();
+        } catch (err) {
+          U.toast(err.message, 'error');
+        } finally {
+          U.setLoading(btn, false);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

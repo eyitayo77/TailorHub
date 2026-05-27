@@ -44,8 +44,11 @@ const API = (() => {
 
   return {
     auth: {
-      login: (email, password) => request('POST', '/auth/login', { email, password }),
-      register: (payload)       => request('POST', '/auth/register', payload),
+      login:          (email, password) => request('POST', '/auth/login', { email, password }),
+      register:       (payload)         => request('POST', '/auth/register', payload),
+      getMe:          ()                => request('GET',  '/auth/me'),
+      updateProfile:  (payload)         => request('PATCH', '/auth/profile', payload),
+      changePassword: (payload)         => request('POST', '/auth/change-password', payload),
     },
     dashboard: {
       getSummary: () => request('GET', '/dashboard/summary'),
